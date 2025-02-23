@@ -1,6 +1,10 @@
 # 📌 To-Do List API
 
+<<<<<<< HEAD
 ![To-Do List Banner](https://static.vecteezy.com/system/resources/thumbnails/020/811/037/small/time-schedule-and-business-management-concept-businessman-planning-work-tasks-and-making-schedule-using-calendar-illustration-free-vector.jpg)  
+=======
+![To-Do List Banner](https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2)  
+>>>>>>> 7f3c8d5 (tudolist)
 
 To-Do List API Laravel orqali qurilgan. Ushbu API yordamida foydalanuvchilar o'z vazifalarini yaratish, tahrirlash va o'chirishlari mumkin. API `Sanctum` orqali autentifikatsiya qilingan.
 

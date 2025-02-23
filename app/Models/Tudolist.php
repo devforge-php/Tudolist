@@ -9,10 +9,14 @@ class Tudolist extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['category_id', 'name', 'text'];
+    protected $fillable = ['user_id', 'category_id', 'name', 'text'];
 
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+    public function tudolist()
+    {
+        return $this->belongsTo(User::class);
     }
 }
