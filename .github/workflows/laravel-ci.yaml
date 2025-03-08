@@ -19,7 +19,7 @@ jobs:
       - name: PHP versiyasini o‘rnatish
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: 8.3
           extensions: mbstring, exif, pcntl, bcmath
           coverage: none
 
@@ -31,7 +31,7 @@ jobs:
           restore-keys: composer-
 
       - name: Composer dependency-larni yuklash
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer install --prefer-dist --no-progress --ignore-platform-reqs
 
       - name: .env faylni yaratish
         run: cp .env.example .env
@@ -46,4 +46,4 @@ jobs:
           DB_DATABASE: database/database.sqlite
 
       - name: PHPUnit testlarni ishlatish
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit  
