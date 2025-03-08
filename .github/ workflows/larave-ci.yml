@@ -1,0 +1,35 @@
+name: TUDOLIST
+
+on:
+  push:
+    branches:
+      - main  
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Tudolist
+        uses: actions/checkout@v3
+
+      - name: PHPni sozlash
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'  # ❌ 8.3.11 noto‘g‘ri, ✅ 8.3 to‘g‘ri
+          extensions: mbstring, xml, ctype, iconv, pdo_mysql
+          tools: composer:v2  # Composer versiyasi avtomatik tanlanadi
+
+      - name: Composer kutubxonalarini yuklash
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: Laravel sozlamalarini tayyorlash
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: PHP testlarini ishga tushirish
+        run: php artisan test 
