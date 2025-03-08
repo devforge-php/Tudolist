@@ -1,0 +1,49 @@
+name: Laravel CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repozitoriydan kodni yuklash
+        uses: actions/checkout@v3
+
+      - name: PHP versiyasini o‘rnatish
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          extensions: mbstring, exif, pcntl, bcmath
+          coverage: none
+
+      - name: Composer cache-ni tiklash
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-
+
+      - name: Composer dependency-larni yuklash
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: .env faylni yaratish
+        run: cp .env.example .env
+
+      - name: Laravel key generatsiya qilish
+        run: php artisan key:generate
+
+      - name: Baza uchun migratsiyalarni ishga tushirish
+        run: php artisan migrate --force
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+
+      - name: PHPUnit testlarni ishlatish
+        run: vendor/bin/phpunit
