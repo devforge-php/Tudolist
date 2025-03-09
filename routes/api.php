@@ -32,5 +32,5 @@ Route::middleware(['auth:sanctum'])->group( function () {
     Route::apiResource('tudolist', TudolistController::class);
 
     });
-// TUDO END
+
 
