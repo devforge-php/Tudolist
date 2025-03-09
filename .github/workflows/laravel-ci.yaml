@@ -11,39 +11,29 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Repozitoriydan kodni yuklash
-        uses: actions/checkout@v3
+      - name: Kodni klonlash
+        uses: actions/checkout@v4
 
-      - name: PHP versiyasini o‘rnatish
+      - name: PHP va Composer o‘rnatish
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
-          extensions: mbstring, exif, pcntl, bcmath
+          tools: composer, phpunit
           coverage: none
 
-      - name: Composer cache-ni tiklash
-        uses: actions/cache@v3
-        with:
-          path: vendor
-          key: composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: composer-
+      - name: Composer orqali bog‘liqliklarni o‘rnatish
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
-      - name: Composer dependency-larni yuklash
-        run: composer install --prefer-dist --no-progress --ignore-platform-reqs
-
-      - name: .env faylni yaratish
+      - name: Muhit sozlamalarini yaratish
         run: cp .env.example .env
 
-      - name: Laravel key generatsiya qilish
+      - name: Laravel kalitini yaratish
         run: php artisan key:generate
 
-      - name: Baza uchun migratsiyalarni ishga tushirish
-        run: php artisan migrate --force
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
+      - name: Ma’lumotlar bazasini migratsiya qilish
+        run: |
+          php artisan migrate --force
 
-      - name: PHPUnit testlarni ishlatish
-        run: vendor/bin/phpunit  
+      - name: Unit testlarni ishlatish
+        run: php artisan test
