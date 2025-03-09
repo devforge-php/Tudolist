@@ -11,6 +11,22 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: laravel
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=3
+
     steps:
       - name: Kodni klonlash
         uses: actions/checkout@v4
@@ -18,7 +34,7 @@ jobs:
       - name: PHP va Composer o‘rnatish
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
+          php-version: 8.1
           tools: composer, phpunit
           coverage: none
 
@@ -31,9 +47,20 @@ jobs:
       - name: Laravel kalitini yaratish
         run: php artisan key:generate
 
-      - name: Ma’lumotlar bazasini migratsiya qilish
+      - name: MySQL ulanishini tekshirish
+        run: mysql --host=127.0.0.1 --user=user --password=password -e "SHOW DATABASES;"
+
+      - name: .env faylini yangilash
         run: |
-          php artisan migrate --force
+          sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=mysql/' .env
+          sed -i 's/DB_HOST=.*/DB_HOST=127.0.0.1/' .env
+          sed -i 's/DB_PORT=.*/DB_PORT=3306/' .env
+          sed -i 's/DB_DATABASE=.*/DB_DATABASE=laravel/' .env
+          sed -i 's/DB_USERNAME=.*/DB_USERNAME=user/' .env
+          sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=password/' .env
+
+      - name: Ma’lumotlar bazasini migratsiya qilish
+        run: php artisan migrate --force
 
       - name: Unit testlarni ishlatish
         run: php artisan test
