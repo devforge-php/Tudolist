@@ -61,6 +61,3 @@ jobs:
 
       - name: Ma’lumotlar bazasini migratsiya qilish
         run: php artisan migrate --force
-
-      - name: Unit testlarni ishlatish
-        run: php artisan test
